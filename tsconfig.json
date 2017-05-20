@@ -4,15 +4,13 @@
 		"module": "umd",
 		"target": "es5",
 		"removeComments": true,
-		"outFile": "./bin/tsc.js",
+		"outDir": "./bin/",
 		"sourceMap": true,
 		"watch": true
 	},
-	"include": [
-		"src/**/*"
-	],
-	"exclude": [
-		"node_modules",
-		"**/*.spec.ts"
+	"files": [
+		"./src/Shape.ts",
+		"./src/ShapeStore.ts",
+		"./src/SketchToShapeStore.ts"
 	]
 }
