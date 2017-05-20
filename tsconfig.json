@@ -1,0 +1,18 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"module": "umd",
+		"target": "es5",
+		"removeComments": true,
+		"outFile": "./bin/tsc.js",
+		"sourceMap": true,
+		"watch": true
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"**/*.spec.ts"
+	]
+}
