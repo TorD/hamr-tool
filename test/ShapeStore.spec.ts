@@ -1,5 +1,5 @@
 import ShapeStore from '../src/ShapeStore';
-import Shape from '../src/Shape';
+import { Shape, Shapes } from '../src/Shape';
 
 import { expect } from 'chai';
 import 'mocha';
@@ -12,7 +12,7 @@ describe('ShapeStore', () => {
 
 	let newShape = (): Shape => {
 		let shapeName = 'test-shape';
-		let shapeSettings = {
+		let shapeSettings: Shapes.Rect = {
 			type: 'rect',
 			width: 0,
 			height: 0,
