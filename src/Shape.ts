@@ -24,6 +24,7 @@ export namespace Filters {
 		strength: number
 	}
 }
+
 export namespace Shapes {
 	export interface Rect {
 		type: 'rect' | string
@@ -80,37 +81,7 @@ export class Shape extends PIXI.Sprite {
 	constructor(name: string, options: Shapes.Rect | Shapes.RoundedRect | Shapes.Ellipse) {
 		super();
 
-		this._name = name;
-		this._shapeOptions = options;
-
-		this._init();
-	}
-
-	public reshape(options: Object, performRedraw: Boolean = true): Shape {
-		for (let key in options) {
-			if (this._shapeOptions.hasOwnProperty(key)) {
-				this._shapeOptions[key] = options[key];
-			}
-			else {
-				throw new Error('Property ' + key + ' does not exist on Shape with type ' + this.type);
-			}
-		}
-
-		if (performRedraw) this.redraw();
-
-		return this;
-	}
-
-	/**
-	 * Redraw Shape with all mods
-	 */
-	public redraw(): void {
-		this.removeChildren();
-		this._applyMods(this._shapeMods);
-	}
-
-	public resetMods(): void {
-		this._shapeMods = [];
+		this._init(name, options);
 	}
 
 	public addModifier(modOptions: Mods.Border | Mods.ColorFill | Mods.PatternFill): Shape {
@@ -128,11 +99,11 @@ export class Shape extends PIXI.Sprite {
 	}
 
 	public set width(value: number) {
+		this._modifiedProps.width = true;
 		this.reshape({width: value});
 	}
 
 	public get width(): number {
-		this._modifiedProps.width = true;
 		return this.shapeOptions.width;
 	}
 
@@ -155,6 +126,10 @@ export class Shape extends PIXI.Sprite {
 		this.position.y = value;
 	}
 
+	public get mods(): Array<Mods.Border | Mods.ColorFill | Mods.PatternFill> {
+		return this._shapeMods;
+	}
+
 	public propHasBeenModified(prop: string): Boolean {
 		return this._modifiedProps[prop];
 	}
@@ -163,14 +138,99 @@ export class Shape extends PIXI.Sprite {
 		return this._shapeOptions;
 	}
 
-	private _init(): void {
+	public reshape(options: Object, performRedraw: Boolean = true): Shape {
+		for (let key in options) {
+			if (this._shapeOptions.hasOwnProperty(key)) {
+				this._shapeOptions[key] = options[key];
+			}
+			else {
+				throw new Error('Property ' + key + ' does not exist on Shape with type ' + this.type);
+			}
+		}
+
+		if (performRedraw) this.redraw();
+
+		return this;
+	}
+
+	/**
+	 * Redraw Shape with all mods
+	 */
+	public redraw(): void {
+		this.removeChildren();
+		this._applyMods(this.mods);
+	}
+
+	public resetMods(): void {
+		this._shapeMods = [];
+	}
+
+	private _init(name: string, options: Shapes.Rect | Shapes.RoundedRect | Shapes.Ellipse): void {
+		if(!name) throw new Error('You must pass a name');
+		if(!options) throw new Error('You must pass an options object');
+
+		this._name = name;
+		this._shapeOptions = options;
+
 		this.resetMods();
 	}
 
 	private _addMod(mod: Mods.Border | Mods.ColorFill | Mods.PatternFill): Mods.Border | Mods.ColorFill | Mods.PatternFill {
-		this._shapeMods.push(mod);
+		this._validateMod(mod);
+
+		this._shapeMods.push(mod); 
 
 		return mod;
+	}
+
+	private _validateMod(mod: Mods.Border | Mods.ColorFill | Mods.PatternFill): void {
+		let blueprint = {};
+		let valid = true;
+
+		switch(mod.type) {
+			case 'border':
+				blueprint = {
+					type: 'border',
+					color: 0x000000,
+					alpha: 1,
+					lineWidth: 1,
+					position: 'outside',
+				}
+				break;
+			case 'colorFill':
+				blueprint = {
+					type: 'colorFill',
+					color: 0x000000,
+					alpha: 1,
+				}
+				break;
+			case 'patternFill':
+				blueprint = {
+					type: 'patternFill',
+					texture: PIXI.Texture.prototype,
+					alpha: 1,
+				}
+				break;
+			default:
+				// If mod is not in this list it's considered invalid
+				valid = false;
+		}
+
+
+		for(let prop in blueprint) {
+			if (mod.hasOwnProperty(prop)) {
+				if (typeof mod[prop] != typeof blueprint[prop]) {
+					valid = false;
+					break;
+				}
+			}
+			else {
+				valid = false;
+				break;
+			}
+		}
+
+		if(valid == false) throw new Error("Mod is not valid; a mod of type " + mod.type + " should have this structure: " + JSON.stringify(blueprint));
 	}
 
 	private _applyMods(mods: Array<Mods.Border | Mods.ColorFill | Mods.PatternFill>): void {
