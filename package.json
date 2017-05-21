@@ -19,7 +19,6 @@
     "chai": "^3.5.0",
     "electron": "^1.6.8",
     "electron-mocha": "^3.4.0",
-    "eslint": "^3.19.0",
     "gulp": "^3.9.1",
     "gulp-plumber": "^1.1.0",
     "gulp-run": "^1.7.1",
