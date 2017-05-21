@@ -7,7 +7,7 @@ gulp.task('test', function() {
 	return run('npm test').exec();
 })
 gulp.task('test-watch', function () {
-	watch('./test/**/*.spec.ts')
+	watch('./**/*.ts')
 		.pipe(plumber())
 		.pipe(run('gulp test'))
 })
