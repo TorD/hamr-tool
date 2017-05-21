@@ -1,4 +1,8 @@
 import { Shape, Shapes, Filters, Mods } from '../src/Shape';
+import * as chai from 'chai';
+import * as sinonChai from 'sinon-chai';
+
+chai.use(sinonChai);
 
 import { expect } from 'chai';
 import 'mocha';
@@ -24,33 +28,19 @@ describe('Shape', () => {
 		})
 
 		it('should throw an error if name string is missing', () => {
-			let constructorSpy = sinon.spy(Shape.prototype, '_init');
-
-			try {
+			let willThrow = () => {
 				newRectShape(null);
 			}
-			catch(e) {
-				// ...
-			}
 
-			constructorSpy.restore();
-
-			expect(constructorSpy.threw()).to.be.true;
+			expect(willThrow).to.throw('Shape name not provided');
 		})
 
 		it('should throw an error if options object is missing', () => {
-			let constructorSpy = sinon.spy(Shape.prototype, '_init');
-
-			try {
+			let willThrow = () => {
 				new Shape('name', null);
 			}
-			catch(e) {
-				// ...
-			}
 
-			constructorSpy.restore();
-
-			expect(constructorSpy.threw()).to.be.true;
+			expect(willThrow).to.throw('Shape options not provided');
 		})
 	})
 
@@ -66,11 +56,11 @@ describe('Shape', () => {
 
 			let shape = newRectShape();
 
-			let addModifierSpy = sinon.spy(shape, 'addModifier');
+			let shouldNotThrow = () => {
+				shape.addModifier(mod);
+			}
 
-			shape.addModifier(mod);
-
-			expect(addModifierSpy.threw()).to.be.false;
+			expect(shouldNotThrow).to.not.throw();
 		})
 
 		it('should accept mods of style Mods.ColorFill', () => {
@@ -82,11 +72,11 @@ describe('Shape', () => {
 
 			let shape = newRectShape();
 
-			let addModifierSpy = sinon.spy(shape, 'addModifier');
+			let shouldNotThrow = () => {
+				shape.addModifier(mod);
+			}
 
-			shape.addModifier(mod);
-
-			expect(addModifierSpy.threw()).to.be.false;
+			expect(shouldNotThrow).to.not.throw();
 		})
 
 		it('should accept mods of style Mods.PatternFill', () => {
@@ -98,16 +88,16 @@ describe('Shape', () => {
 
 			let shape = newRectShape();
 
-			let addModifierSpy = sinon.spy(shape, 'addModifier');
+			let shouldNotThrow = () => {
+				shape.addModifier(mod);
+			}
 
-			shape.addModifier(mod);
-
-			expect(addModifierSpy.threw()).to.be.false;
+			expect(shouldNotThrow).to.not.throw();
 		})
 	})
 
 	describe('type', () => {
-		it('should return a string', () => {
+		it('should return the shape type', () => {
 			let shapeType = 'rect';
 			let shape = newRectShape();
 
@@ -127,9 +117,7 @@ describe('Shape', () => {
 
 				shape.width = newWidth;
 
-				let result = reshapeSpy.calledWith({width: newWidth});
-
-				expect(result).to.be.true;
+				expect(reshapeSpy).to.be.calledWith({width: newWidth});
 			})
 
 			it('should mark width as modified prop', () => {
@@ -154,9 +142,7 @@ describe('Shape', () => {
 
 				shape.height = newHeight;
 
-				let result = reshapeSpy.calledWith({height: newHeight});
-
-				expect(result).to.be.true;
+				expect(reshapeSpy).to.be.calledWith({height: newHeight});
 			})
 
 			it('should mark height as modified prop', () => {
@@ -223,17 +209,11 @@ describe('Shape', () => {
 		it('should throw an error if a property key does not exist on Shape type', () => {
 			let shape = newRectShape();
 
-			let reshapeSpy = sinon.spy(shape, 'reshape');
-
-			try {
+			let shouldThrow = () => {
 				shape.reshape({radius: 25});
-
-			}
-			catch(e) {
-				// ...
 			}
 
-			expect(reshapeSpy.threw()).to.be.true;
+			expect(shouldThrow).to.throw();
 		})
 
 		it('should modify the value of properties in shapeOptions', () => {
@@ -257,7 +237,7 @@ describe('Shape', () => {
 
 			shape.reshape({width: 500});
 
-			expect(redrawSpy.called).to.be.true;
+			expect(redrawSpy).to.be.called;
 		})
 
 		it('should call redraw if second parameter is true', () => {
@@ -267,7 +247,7 @@ describe('Shape', () => {
 
 			shape.reshape({width: 500}, true);
 
-			expect(redrawSpy.called).to.be.true;
+			expect(redrawSpy).to.be.called;
 		})
 
 		it('should not call redraw if second parameter is false', () => {
@@ -277,7 +257,7 @@ describe('Shape', () => {
 
 			shape.reshape({width: 500}, false);
 
-			expect(redrawSpy.called).to.be.false;
+			expect(redrawSpy).not.to.be.called;
 		})
 	})
 
@@ -289,7 +269,7 @@ describe('Shape', () => {
 
 			shape.redraw();
 
-			expect(removeChildrenSpy.called).to.be.true;
+			expect(removeChildrenSpy).to.be.called;
 		})
 
 		it('should re-apply and re-add its mods as children after removing them', () => {
