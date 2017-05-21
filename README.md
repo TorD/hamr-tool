@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.com/TorD/hamr-tool.svg?token=xy1phpyRPaE4Tqp8FgYB&branch=master)](https://travis-ci.com/TorD/hamr-tool)
 
 # hamr-tool
-A set of tools for speedy UI development using SVG conversion and PIXI
+A set of tools for speedy UI development wrapped around [PIXI](https://github.com/pixijs/pixi.js) using dynamic Shape objects with filter modifiers. Also includes SVG parsing and automatic creation of near-identical Shape objects.
 
 ## Running tests
 1. `npm install`
