@@ -14,8 +14,6 @@ describe('ShapeStore', () => {
 		let shapeName = 'test-shape';
 		let shapeSettings = {
 			type: 'rect',
-			x: 0,
-			y: 0,
 			width: 0,
 			height: 0,
 		}
