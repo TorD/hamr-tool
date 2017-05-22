@@ -28,19 +28,19 @@ describe('Shape', () => {
 		})
 
 		it('should throw an error if name string is missing', () => {
-			let willThrow = () => {
+			let createShapeWithoutName = () => {
 				newRectShape(null);
 			}
 
-			expect(willThrow).to.throw('Shape name not provided');
+			expect(createShapeWithoutName).to.throw('Shape name not provided');
 		})
 
 		it('should throw an error if options object is missing', () => {
-			let willThrow = () => {
+			let createShapeWithoutOptions = () => {
 				new Shape('name', null);
 			}
 
-			expect(willThrow).to.throw('Shape options not provided');
+			expect(createShapeWithoutOptions).to.throw('Shape options not provided');
 		})
 	})
 
@@ -56,11 +56,11 @@ describe('Shape', () => {
 
 			let shape = newRectShape();
 
-			let shouldNotThrow = () => {
+			let addABorderModifier = () => {
 				shape.addModifier(mod);
 			}
 
-			expect(shouldNotThrow).to.not.throw();
+			expect(addABorderModifier).to.not.throw();
 		})
 
 		it('should accept mods of style Mods.ColorFill', () => {
@@ -72,11 +72,11 @@ describe('Shape', () => {
 
 			let shape = newRectShape();
 
-			let shouldNotThrow = () => {
+			let addAColorFillModifier = () => {
 				shape.addModifier(mod);
 			}
 
-			expect(shouldNotThrow).to.not.throw();
+			expect(addAColorFillModifier).to.not.throw();
 		})
 
 		it('should accept mods of style Mods.PatternFill', () => {
@@ -88,11 +88,11 @@ describe('Shape', () => {
 
 			let shape = newRectShape();
 
-			let shouldNotThrow = () => {
+			let addAPatternFillModifier = () => {
 				shape.addModifier(mod);
 			}
 
-			expect(shouldNotThrow).to.not.throw();
+			expect(addAPatternFillModifier).to.not.throw();
 		})
 	})
 
@@ -209,11 +209,11 @@ describe('Shape', () => {
 		it('should throw an error if a property key does not exist on Shape type', () => {
 			let shape = newRectShape();
 
-			let shouldThrow = () => {
+			let reshapeWithNonExistentProperty = () => {
 				shape.reshape({radius: 25});
 			}
 
-			expect(shouldThrow).to.throw();
+			expect(reshapeWithNonExistentProperty).to.throw();
 		})
 
 		it('should modify the value of properties in shapeOptions', () => {
