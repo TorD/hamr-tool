@@ -11,7 +11,7 @@ import * as sinon from 'sinon';
 PIXI.utils.skipHello();
 
 describe('Shape', () => {
-	let newRectShape = (shapeName = 'test-rect-shape'): Shape => {
+	let createRectShape = (shapeName = 'test-rect-shape'): Shape => {
 		let shapeSettings = {
 			type: 'rect',
 			width: 20,
@@ -23,13 +23,13 @@ describe('Shape', () => {
 
 	describe('constructor', () => {
 		it('should return a valid instance when passed a name string and options object', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 			expect(shape).to.be.an('object');
 		})
 
 		it('should throw an error if name string is missing', () => {
 			let createShapeWithoutName = () => {
-				newRectShape(null);
+				createRectShape(null);
 			}
 
 			expect(createShapeWithoutName).to.throw('Shape name not provided');
@@ -54,7 +54,7 @@ describe('Shape', () => {
 				position: 'inside'
 			}
 
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let addABorderModifier = () => {
 				shape.addModifier(mod);
@@ -70,7 +70,7 @@ describe('Shape', () => {
 				alpha: 0,
 			}
 
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let addAColorFillModifier = () => {
 				shape.addModifier(mod);
@@ -86,7 +86,7 @@ describe('Shape', () => {
 				alpha: 0,
 			}
 
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let addAPatternFillModifier = () => {
 				shape.addModifier(mod);
@@ -99,7 +99,7 @@ describe('Shape', () => {
 	describe('type', () => {
 		it('should return the shape type', () => {
 			let shapeType = 'rect';
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let result = shape.type;
 
@@ -110,7 +110,7 @@ describe('Shape', () => {
 	describe('width', () => {
 		describe('set', () => {
 			it('should call reshape with passed value as width property of options', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				let newWidth = 500;
 
 				let reshapeSpy = sinon.spy(shape, 'reshape');
@@ -121,7 +121,7 @@ describe('Shape', () => {
 			})
 
 			it('should mark width as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.width = 500;
 
@@ -135,7 +135,7 @@ describe('Shape', () => {
 	describe('height', () => {
 		describe('set', () => {
 			it('should call reshape with passed value as height property of options', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				let newHeight = 500;
 
 				let reshapeSpy = sinon.spy(shape, 'reshape');
@@ -146,7 +146,7 @@ describe('Shape', () => {
 			})
 
 			it('should mark height as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.height = 500;
 
@@ -160,7 +160,7 @@ describe('Shape', () => {
 	describe('x', () => {
 		describe('set', () => {
 			it('should mark x as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.x = 100;
 
@@ -174,7 +174,7 @@ describe('Shape', () => {
 	describe('y', () => {
 		describe('set', () => {
 			it('should mark y as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.y = 100;
 
@@ -187,7 +187,7 @@ describe('Shape', () => {
 
 	describe('propHasBeenModified', () => {
 		it('should return true if a given prop has been modified', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			shape.x = 200;
 
@@ -197,7 +197,7 @@ describe('Shape', () => {
 		})
 
 		it('should return false if a given prop has not been been modified', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let result = shape.propHasBeenModified('width');
 
@@ -207,7 +207,7 @@ describe('Shape', () => {
 
 	describe('reshape', () => {
 		it('should throw an error if a property key does not exist on Shape type', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let reshapeWithNonExistentProperty = () => {
 				shape.reshape({radius: 25});
@@ -217,7 +217,7 @@ describe('Shape', () => {
 		})
 
 		it('should modify the value of properties in shapeOptions', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 			let newWidth = shape.width + 1000;
 			let newHeight = shape.height + 500;
 
@@ -231,7 +231,7 @@ describe('Shape', () => {
 		})
 
 		it('should call redraw by default', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let redrawSpy = sinon.spy(shape, 'redraw');
 
@@ -241,7 +241,7 @@ describe('Shape', () => {
 		})
 
 		it('should call redraw if second parameter is true', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let redrawSpy = sinon.spy(shape, 'redraw');
 
@@ -251,7 +251,7 @@ describe('Shape', () => {
 		})
 
 		it('should not call redraw if second parameter is false', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let redrawSpy = sinon.spy(shape, 'redraw');
 
@@ -263,7 +263,7 @@ describe('Shape', () => {
 
 	describe('redraw', () => {
 		it('should call removeChildren', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let removeChildrenSpy = sinon.spy(shape, 'removeChildren');
 
@@ -273,7 +273,7 @@ describe('Shape', () => {
 		})
 
 		it('should re-apply and re-add its mods as children after removing them', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 			let mod: Mods.Border = {
 				type: 'border',
 				color: 0xff0000,
@@ -294,7 +294,7 @@ describe('Shape', () => {
 
 	describe('resetMods', () => {
 		it('should remove all mods', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let mod: Mods.Border = {
 				type: 'border',
