@@ -30,6 +30,7 @@ export namespace Shapes {
 		type: 'rect' | string
 		width: number
 		height: number
+		[key: string]: any
 	};
 
 	export interface RoundedRect {
@@ -37,12 +38,18 @@ export namespace Shapes {
 		width: number
 		height: number
 		radius: number
+		[key: string]: any
 	}
 	
 	export interface Ellipse {
 		type: 'ellipse' | string
 		width: number
 		height: number
+		[key: string]: any
+	}
+
+	export interface ReshapeObject {
+		[key: string]: any
 	}
 }
 
@@ -71,12 +78,19 @@ export namespace Mods {
 	}
 }
 
+interface ModifiedProps {
+	x: Boolean
+	y: Boolean
+	width: Boolean
+	height: Boolean
+	[key: string]: Boolean
+};
 
 export class Shape extends PIXI.Sprite {
 	private _shapeOptions: Shapes.Rect | Shapes.RoundedRect | Shapes.Ellipse;
 	private _shapeMods: Array<Mods.Border | Mods.ColorFill | Mods.PatternFill>; // An array of functions that contain the logic to redraw this shape with the added mods
+	private _modifiedProps: ModifiedProps;
 	private _name: string;
-	private _modifiedProps = {x: false, y: false, width: false, height: false};
 
 	constructor(name: string, options: Shapes.Rect | Shapes.RoundedRect | Shapes.Ellipse) {
 		super();
@@ -138,7 +152,7 @@ export class Shape extends PIXI.Sprite {
 		return this._shapeOptions;
 	}
 
-	public reshape(options: Object, performRedraw: Boolean = true): Shape {
+	public reshape(options: Shapes.ReshapeObject, performRedraw: Boolean = true): Shape {
 		for (let key in options) {
 			if (this._shapeOptions.hasOwnProperty(key)) {
 				this._shapeOptions[key] = options[key];
@@ -171,6 +185,7 @@ export class Shape extends PIXI.Sprite {
 
 		this._name = name;
 		this._shapeOptions = options;
+		this._modifiedProps = {x: false, y: false, width: false, height: false};
 
 		this.resetMods();
 	}
