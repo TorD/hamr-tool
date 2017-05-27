@@ -8,9 +8,7 @@ import * as sinon from 'sinon';
 PIXI.utils.skipHello();
 
 describe('ShapeStore', () => {
-	let shapeStore: ShapeStore = undefined;
-
-	let newShape = (): Shape => {
+	let createShape = (): Shape => {
 		let shapeName = 'test-shape';
 		let shapeSettings: Shapes.Rect = {
 			type: 'rect',
@@ -20,12 +18,10 @@ describe('ShapeStore', () => {
 		return new Shape(shapeName, shapeSettings);
 	}
 
-	beforeEach(() => {
-		shapeStore = new ShapeStore();
-	})
-
 	describe('constructor', () => {
 		it('should return a valid instance', () => {
+			let shapeStore: ShapeStore = new ShapeStore();
+
 			expect(shapeStore).to.be.an('object');
 		})
 	})
@@ -33,8 +29,10 @@ describe('ShapeStore', () => {
 	describe('addShape', () => {
 		describe('if Shape at path does not exist', () => {
 			it('should store shape at path', () => {
+				let shapeStore: ShapeStore = new ShapeStore();
+
 				let shapePath = 'test.path';
-				let shape = newShape();
+				let shape = createShape();
 
 				shapeStore.addShape(shapePath, shape);
 
@@ -44,8 +42,10 @@ describe('ShapeStore', () => {
 			});
 
 			it('should create a group object for the shape and path', () => {
+				let shapeStore: ShapeStore = new ShapeStore();
+
 				let shapePath = 'test.path',
-					shape = newShape();
+					shape = createShape();
 
 				shapeStore.addShape(shapePath, shape);
 
@@ -55,17 +55,19 @@ describe('ShapeStore', () => {
 			});
 
 			it('should add shape to shapes array', () => {
-				let shape = newShape();
+				let shapeStore: ShapeStore = new ShapeStore();
+				let shape = createShape();
 
 				shapeStore.addShape('test-path', shape);
 
 				let result = shapeStore.shapes.indexOf(shape);
 
-				expect(result).to.be.greaterThan(-1);
+				expect(result).to.not.be.equal(-1);
 			})
 
 			it('should return passed shape', () => {
-				let shape = newShape();
+				let shapeStore: ShapeStore = new ShapeStore();
+				let shape = createShape();
 
 				let result = shapeStore.addShape('test-path', shape);
 
@@ -73,30 +75,30 @@ describe('ShapeStore', () => {
 			})
 		})
 
-		describe('if Shape at path already exists', () => {
+		describe('when Shape at path already exists', () => {
 			it('should throw an error', () => {
-				let shape1 = newShape();
-				let shape2 = newShape();
+				let shapeStore: ShapeStore = new ShapeStore();
+				let shape1 = createShape();
+				let shape2 = createShape();
 				let shapePath = 'test-path';
 
 				shapeStore.addShape(shapePath, shape1);
 
 				let addShapeSpy = sinon.spy(shapeStore, 'addShape');
 
-				try {
+				let addAShapeAtExistingPath = () => {
 					shapeStore.addShape(shapePath, shape2);
 				}
-				catch(e) {
-					// ...
-				}
 				
-				expect(addShapeSpy.threw()).to.be.true;
+				expect(addAShapeAtExistingPath).to.throw();
 			})
 		})
 	})
 
 	describe('createGroup', () => {
 		it('should create a PIXI.Container for each section of a path', () => {
+			let shapeStore: ShapeStore = new ShapeStore();
+
 			shapeStore.createGroup('first.second.third');
 
 			let firstContainer = shapeStore.getGroupFromPath('first');
@@ -109,6 +111,8 @@ describe('ShapeStore', () => {
 		})
 
 		it('should return the last PIXI.Container of a path sequence', () => {
+			let shapeStore: ShapeStore = new ShapeStore();
+
 			let result = shapeStore.createGroup('first.second');
 			let firstContainer = shapeStore.getGroupFromPath('first');
 			let secondContainer = shapeStore.getGroupFromPath('first.second');
@@ -117,32 +121,35 @@ describe('ShapeStore', () => {
 		})
 	})
 
-	describe('getGroupFromPath', () => {
+	describe('getShapeFromPath', () => {
 		it('should return a Shape if path exists', () => {
-			let shape = newShape();
+			let shapeStore: ShapeStore = new ShapeStore();
+
+			let shape = createShape();
 			let path = 'test.path';
 
-			let result = shapeStore.addShape(path, shape);
+			shapeStore.addShape(path, shape);
+
+			let result = shapeStore.getShapeFromPath(path);
 
 			expect(result).to.be.equal(shape);
 		})
 
 		it('should throw an error if path does not exist', () => {
-			let getShapeFromPathSpy = sinon.spy(shapeStore, 'getShapeFromPath');
+			let shapeStore: ShapeStore = new ShapeStore();
 
-			try {
+			let getShapeFromNonExistingPath = () => {
 				shapeStore.getShapeFromPath('test.path');
 			}
-			catch(e) {
-				// ...
-			}
 
-			expect(getShapeFromPathSpy.threw()).to.be.true;
+			expect(getShapeFromNonExistingPath).to.throw();
 		})
 	})
 
 	describe('hasGroupAtPath', () => {
 		it('should return true if group exists at path', () => {
+			let shapeStore: ShapeStore = new ShapeStore();
+
 			let path = 'test.path';
 
 			shapeStore.createGroup(path);
@@ -153,6 +160,8 @@ describe('ShapeStore', () => {
 		})
 
 		it('should return false if group does not exist at path', () => {
+			let shapeStore: ShapeStore = new ShapeStore();
+
 			let result = shapeStore.hasGroupAtPath('test.path');
 
 			expect(result).to.be.false;
@@ -161,7 +170,9 @@ describe('ShapeStore', () => {
 
 	describe('hasShapeAtPath', () => {
 		it('should return true if a Shape exists at path', () => {
-			let shape = newShape();
+			let shapeStore: ShapeStore = new ShapeStore();
+
+			let shape = createShape();
 			let path = 'test.test.path';
 
 			shapeStore.addShape(path, shape);
@@ -172,6 +183,8 @@ describe('ShapeStore', () => {
 		})
 
 		it('should return false if Shape does not exist at path', () => {
+			let shapeStore: ShapeStore = new ShapeStore();
+
 			let result = shapeStore.hasShapeAtPath('test.path');
 
 			expect(result).to.be.false;
@@ -180,19 +193,19 @@ describe('ShapeStore', () => {
 
 	describe('shapes', () => {
 		it('should return a FIFO array of all added Shapes', () => {
-			let shape1 = newShape();
+			let shapeStore: ShapeStore = new ShapeStore();
+
+			let shape1 = createShape();
 			let path1 = 'test.path.first';
 
-			let shape2 = newShape();
+			let shape2 = createShape();
 			let path2 = 'test.path.second';
 
 			shapeStore.addShape(path1, shape1);
 			shapeStore.addShape(path2, shape2);
 
 			let resultArray = shapeStore.shapes;
-
-			expect(resultArray[0]).to.be.equal(shape1);
-			expect(resultArray[1]).to.be.equal(shape2);
+			expect(resultArray).to.deep.equal([shape1, shape2]);
 		})
 	})
 })

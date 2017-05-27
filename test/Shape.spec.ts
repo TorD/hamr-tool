@@ -1,4 +1,8 @@
 import { Shape, Shapes, Filters, Mods } from '../src/Shape';
+import * as chai from 'chai';
+import * as sinonChai from 'sinon-chai';
+
+chai.use(sinonChai);
 
 import { expect } from 'chai';
 import 'mocha';
@@ -7,7 +11,7 @@ import * as sinon from 'sinon';
 PIXI.utils.skipHello();
 
 describe('Shape', () => {
-	let newRectShape = (shapeName = 'test-rect-shape'): Shape => {
+	let createRectShape = (shapeName = 'test-rect-shape'): Shape => {
 		let shapeSettings = {
 			type: 'rect',
 			width: 20,
@@ -19,38 +23,24 @@ describe('Shape', () => {
 
 	describe('constructor', () => {
 		it('should return a valid instance when passed a name string and options object', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 			expect(shape).to.be.an('object');
 		})
 
 		it('should throw an error if name string is missing', () => {
-			let constructorSpy = sinon.spy(Shape.prototype, '_init');
-
-			try {
-				newRectShape(null);
-			}
-			catch(e) {
-				// ...
+			let createShapeWithoutName = () => {
+				createRectShape(null);
 			}
 
-			constructorSpy.restore();
-
-			expect(constructorSpy.threw()).to.be.true;
+			expect(createShapeWithoutName).to.throw('Shape name not provided');
 		})
 
 		it('should throw an error if options object is missing', () => {
-			let constructorSpy = sinon.spy(Shape.prototype, '_init');
-
-			try {
+			let createShapeWithoutOptions = () => {
 				new Shape('name', null);
 			}
-			catch(e) {
-				// ...
-			}
 
-			constructorSpy.restore();
-
-			expect(constructorSpy.threw()).to.be.true;
+			expect(createShapeWithoutOptions).to.throw('Shape options not provided');
 		})
 	})
 
@@ -64,13 +54,13 @@ describe('Shape', () => {
 				position: 'inside'
 			}
 
-			let shape = newRectShape();
+			let shape = createRectShape();
 
-			let addModifierSpy = sinon.spy(shape, 'addModifier');
+			let addABorderModifier = () => {
+				shape.addModifier(mod);
+			}
 
-			shape.addModifier(mod);
-
-			expect(addModifierSpy.threw()).to.be.false;
+			expect(addABorderModifier).to.not.throw();
 		})
 
 		it('should accept mods of style Mods.ColorFill', () => {
@@ -80,13 +70,13 @@ describe('Shape', () => {
 				alpha: 0,
 			}
 
-			let shape = newRectShape();
+			let shape = createRectShape();
 
-			let addModifierSpy = sinon.spy(shape, 'addModifier');
+			let addAColorFillModifier = () => {
+				shape.addModifier(mod);
+			}
 
-			shape.addModifier(mod);
-
-			expect(addModifierSpy.threw()).to.be.false;
+			expect(addAColorFillModifier).to.not.throw();
 		})
 
 		it('should accept mods of style Mods.PatternFill', () => {
@@ -96,20 +86,20 @@ describe('Shape', () => {
 				alpha: 0,
 			}
 
-			let shape = newRectShape();
+			let shape = createRectShape();
 
-			let addModifierSpy = sinon.spy(shape, 'addModifier');
+			let addAPatternFillModifier = () => {
+				shape.addModifier(mod);
+			}
 
-			shape.addModifier(mod);
-
-			expect(addModifierSpy.threw()).to.be.false;
+			expect(addAPatternFillModifier).to.not.throw();
 		})
 	})
 
 	describe('type', () => {
-		it('should return a string', () => {
+		it('should return the shape type', () => {
 			let shapeType = 'rect';
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let result = shape.type;
 
@@ -120,20 +110,18 @@ describe('Shape', () => {
 	describe('width', () => {
 		describe('set', () => {
 			it('should call reshape with passed value as width property of options', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				let newWidth = 500;
 
 				let reshapeSpy = sinon.spy(shape, 'reshape');
 
 				shape.width = newWidth;
 
-				let result = reshapeSpy.calledWith({width: newWidth});
-
-				expect(result).to.be.true;
+				expect(reshapeSpy).to.be.calledWith({width: newWidth});
 			})
 
 			it('should mark width as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.width = 500;
 
@@ -147,20 +135,18 @@ describe('Shape', () => {
 	describe('height', () => {
 		describe('set', () => {
 			it('should call reshape with passed value as height property of options', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				let newHeight = 500;
 
 				let reshapeSpy = sinon.spy(shape, 'reshape');
 
 				shape.height = newHeight;
 
-				let result = reshapeSpy.calledWith({height: newHeight});
-
-				expect(result).to.be.true;
+				expect(reshapeSpy).to.be.calledWith({height: newHeight});
 			})
 
 			it('should mark height as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.height = 500;
 
@@ -174,7 +160,7 @@ describe('Shape', () => {
 	describe('x', () => {
 		describe('set', () => {
 			it('should mark x as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.x = 100;
 
@@ -188,7 +174,7 @@ describe('Shape', () => {
 	describe('y', () => {
 		describe('set', () => {
 			it('should mark y as modified prop', () => {
-				let shape = newRectShape();
+				let shape = createRectShape();
 				
 				shape.y = 100;
 
@@ -201,7 +187,7 @@ describe('Shape', () => {
 
 	describe('propHasBeenModified', () => {
 		it('should return true if a given prop has been modified', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			shape.x = 200;
 
@@ -211,7 +197,7 @@ describe('Shape', () => {
 		})
 
 		it('should return false if a given prop has not been been modified', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let result = shape.propHasBeenModified('width');
 
@@ -221,23 +207,17 @@ describe('Shape', () => {
 
 	describe('reshape', () => {
 		it('should throw an error if a property key does not exist on Shape type', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
-			let reshapeSpy = sinon.spy(shape, 'reshape');
-
-			try {
+			let reshapeWithNonExistentProperty = () => {
 				shape.reshape({radius: 25});
-
-			}
-			catch(e) {
-				// ...
 			}
 
-			expect(reshapeSpy.threw()).to.be.true;
+			expect(reshapeWithNonExistentProperty).to.throw();
 		})
 
 		it('should modify the value of properties in shapeOptions', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 			let newWidth = shape.width + 1000;
 			let newHeight = shape.height + 500;
 
@@ -251,49 +231,49 @@ describe('Shape', () => {
 		})
 
 		it('should call redraw by default', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let redrawSpy = sinon.spy(shape, 'redraw');
 
 			shape.reshape({width: 500});
 
-			expect(redrawSpy.called).to.be.true;
+			expect(redrawSpy).to.be.called;
 		})
 
 		it('should call redraw if second parameter is true', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let redrawSpy = sinon.spy(shape, 'redraw');
 
 			shape.reshape({width: 500}, true);
 
-			expect(redrawSpy.called).to.be.true;
+			expect(redrawSpy).to.be.called;
 		})
 
 		it('should not call redraw if second parameter is false', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let redrawSpy = sinon.spy(shape, 'redraw');
 
 			shape.reshape({width: 500}, false);
 
-			expect(redrawSpy.called).to.be.false;
+			expect(redrawSpy).not.to.be.called;
 		})
 	})
 
 	describe('redraw', () => {
 		it('should call removeChildren', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let removeChildrenSpy = sinon.spy(shape, 'removeChildren');
 
 			shape.redraw();
 
-			expect(removeChildrenSpy.called).to.be.true;
+			expect(removeChildrenSpy).to.be.called;
 		})
 
 		it('should re-apply and re-add its mods as children after removing them', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 			let mod: Mods.Border = {
 				type: 'border',
 				color: 0xff0000,
@@ -314,7 +294,7 @@ describe('Shape', () => {
 
 	describe('resetMods', () => {
 		it('should remove all mods', () => {
-			let shape = newRectShape();
+			let shape = createRectShape();
 
 			let mod: Mods.Border = {
 				type: 'border',

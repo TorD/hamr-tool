@@ -180,8 +180,8 @@ export class Shape extends PIXI.Sprite {
 	}
 
 	private _init(name: string, options: Shapes.Rect | Shapes.RoundedRect | Shapes.Ellipse): void {
-		if(!name) throw new Error('You must pass a name');
-		if(!options) throw new Error('You must pass an options object');
+		if(!name) throw new Error('Shape name not provided');
+		if(!options) throw new Error('Shape options not provided');
 
 		this._name = name;
 		this._shapeOptions = options;

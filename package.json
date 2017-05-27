@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "electron-mocha -r ts-node/register ./test/**/*.spec.ts --renderer",
-    "test-watch": "gulp test-watch",
+    "test-watch": "onchange 'src/**/*.ts' 'test/**/*.ts' -- npm run test",
     "unit-test": "tsc ./test/**/*.spec.ts ./tmp/index.js"
   },
   "author": "Tor Damian Lorentzen",
@@ -19,14 +19,15 @@
     "chai": "^3.5.0",
     "electron": "^1.6.8",
     "electron-mocha": "^3.4.0",
-    "gulp": "^3.9.1",
-    "gulp-plumber": "^1.1.0",
-    "gulp-run": "^1.7.1",
-    "gulp-watch": "^4.3.11",
     "mocha": "^3.4.1",
     "pixi.js": "^4.5.2",
     "sinon": "^2.2.0",
+    "sinon-chai": "^2.10.0",
     "ts-node": "^3.0.4",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.2",
+    "onchange": "^3.2.1"
+  },
+  "dependencies": {
+    "@types/sinon-chai": "^2.7.27"
   }
 }
