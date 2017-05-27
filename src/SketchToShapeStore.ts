@@ -1,4 +1,6 @@
-import ShapeStore from 'ShapeStore';
+import { Shape, Shapes, Filters, Mods } from './Shape';
+import ShapeStore from './ShapeStore';
+
 interface ColorValue {
 	type: 'hex' | 'patternFill' | null,
 	value: any | PIXI.Texture | null
